@@ -24,14 +24,6 @@ public class Frame extends JFrame {
         autoMode[2] = new JButton("Fish");
 
         thread.start();
-<<<<<<< HEAD
-        startButton.addActionListener(e -> {
-            button_clicked = !button_clicked;
-            System.out.println(button_clicked);
-        });
-        setLayout(new BorderLayout());
-        add(startButton,BorderLayout.SOUTH);
-=======
         startButton.addActionListener(e -> canStart(startButton));
 
         setLayout(new GridLayout(0, 1));
@@ -49,7 +41,6 @@ public class Frame extends JFrame {
             add(autoMode[i-1]);
         }
 
->>>>>>> 5b86039ec9c1d6b2bc5d1bceef609f77addb5264
         setLocationRelativeTo(null);
         setVisible(true);
         addNativeMouseListener(new NativeMouseListener(){
@@ -91,11 +82,6 @@ public class Frame extends JFrame {
         while(true){
             try {
                 robot = new Robot();
-<<<<<<< HEAD
-                if (state && button_clicked){
-                    robot.mousePress(KeyEvent.BUTTON1_MASK);
-                    robot.keyPress(KeyEvent.VK_W);
-=======
                 Color mcIcon = new Color(160, 233, 117);
                 boolean isMC = mcIcon.equals(robot.getPixelColor(12,8));
 
@@ -119,7 +105,6 @@ public class Frame extends JFrame {
                         System.out.println("fish");
                         Thread.sleep(500);
                     }
->>>>>>> 5b86039ec9c1d6b2bc5d1bceef609f77addb5264
                 }
 
 
