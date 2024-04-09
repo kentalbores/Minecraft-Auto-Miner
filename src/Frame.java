@@ -15,7 +15,7 @@ public class Frame extends JFrame {
         thread.start();
         startButton.addActionListener(e -> {
             button_clicked = !button_clicked;
-            System.out.println(state);
+            System.out.println(button_clicked);
         });
         setLayout(new BorderLayout());
         add(startButton,BorderLayout.SOUTH);
@@ -45,7 +45,6 @@ public class Frame extends JFrame {
                 robot = new Robot();
                 if (state && button_clicked){
                     robot.mousePress(KeyEvent.BUTTON1_MASK);
-                    System.out.println("hfehfe");
                     robot.keyPress(KeyEvent.VK_W);
                 }
                 Thread.sleep(500);
