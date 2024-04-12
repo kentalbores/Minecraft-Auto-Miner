@@ -73,6 +73,8 @@ public class Frame extends JFrame {
             button_clicked = !button_clicked;
             startBtn.setText(button_clicked ? "Stop [MMB]" : "Start [MMB]");
             System.out.println(state);
+            robot.mouseRelease(KeyEvent.BUTTON1_DOWN_MASK);
+            robot.keyRelease(KeyEvent.VK_W);
         }
         else
             JOptionPane.showMessageDialog(this,"Choose a mode first!");
@@ -85,7 +87,7 @@ public class Frame extends JFrame {
                 Color mcIcon = new Color(160, 233, 117);
                 boolean isMC = mcIcon.equals(robot.getPixelColor(12,8));
 
-                if (state && button_clicked && isMC){
+                if (state && button_clicked){
                     if(mode == 1) {
                         robot.mousePress(KeyEvent.BUTTON1_DOWN_MASK);
                         System.out.println("mine");
