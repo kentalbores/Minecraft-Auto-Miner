@@ -7,9 +7,10 @@ import static com.github.kwhat.jnativehook.GlobalScreen.addNativeMouseListener;
 
 public class Frame extends JFrame {
     Robot robot;
-    int mode = 0;
+    long startTime, turnTime;
+    int mode = 0, mousePosX, mousePosY, axis = 1, counter = 0;
 
-    boolean state = false, button_clicked = false;
+    boolean state = false, button_clicked = false, canTurn = true;
     Frame(){
         setTitle("AutoClicker");
         setBackground(Color.LIGHT_GRAY);
@@ -45,10 +46,12 @@ public class Frame extends JFrame {
         setVisible(true);
         addNativeMouseListener(new NativeMouseListener(){
             public void nativeMouseClicked(NativeMouseEvent e) {
+                mousePosX = e.getX();
+                mousePosY = e.getY();
+                System.out.println(mousePosX + " " + mousePosY);
                 if(e.getButton() == 3) { // middle click to start shortcut
                     canStart(startButton); //note: native mouse 3 is mmb while robot is 2
                 }                          // and vice versa for rmb
-
                 System.out.print("hi");
             }
         });
@@ -75,25 +78,54 @@ public class Frame extends JFrame {
             System.out.println(state);
             robot.mouseRelease(KeyEvent.BUTTON1_DOWN_MASK);
             robot.keyRelease(KeyEvent.VK_W);
+
         }
         else
             JOptionPane.showMessageDialog(this,"Choose a mode first!");
     }
 
+    public void turnAround(int secs){
+        try {
+            if (System.currentTimeMillis()/1000 - startTime > secs && canTurn) {
+                canTurn = false;
+                robot.mouseMove(mousePosX + 300 * axis, mousePosY);
+                Thread.sleep(10);
+                robot.mouseMove(mousePosX + 300 * axis, mousePosY);
+                turnTime = System.currentTimeMillis() / 100;
+                System.out.println( startTime + ", Time: " + System.currentTimeMillis()/1000 + ", Turn Time: " + turnTime);
+            }
+            if (System.currentTimeMillis()/100 - turnTime > 15 && !canTurn){
+                startTime = System.currentTimeMillis()/1000;
+                canTurn = true;
+                robot.mouseMove(mousePosX + 300 * axis, mousePosY);
+                Thread.sleep(10);
+                robot.mouseMove(mousePosX + 300 * axis, mousePosY);
+                System.out.println("small turn");
+                axis *= -1;
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     Thread thread = new Thread(()->{
-        while(true){
-            try {
-                robot = new Robot();
+        startTime = System.currentTimeMillis()/1000;
+        try {
+            robot = new Robot();
+            while(true){
                 Color mcIcon = new Color(160, 233, 117);
                 boolean isMC = mcIcon.equals(robot.getPixelColor(12,8));
 
                 if (state && button_clicked){
                     if(mode == 1) {
+                        turnAround(10);//time in seconds
+
                         robot.mousePress(KeyEvent.BUTTON1_DOWN_MASK);
-                        System.out.println("mine");
                         robot.keyPress(KeyEvent.VK_W);
-                        System.out.println(robot.getPixelColor(12, 8)); //ilisi ang mcIcon if lahi imoha
+//                        System.out.println(robot.getPixelColor(12, 8)); //ilisi ang mcIcon if lahi imoha
                         Thread.sleep(10);
+
                     }
                     else if(mode == 2){
                         robot.mousePress(KeyEvent.BUTTON1_DOWN_MASK);
@@ -108,11 +140,9 @@ public class Frame extends JFrame {
                         Thread.sleep(500);
                     }
                 }
-
-
-            }catch (Exception e){
-                e.printStackTrace();
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     });
 }
